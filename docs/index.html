@@ -36,7 +36,7 @@
     --ochre: #C9922F;
     --slate: #6A7B8C;
     --focus: #C4623B;
-    /* low-poly mesh shades, dark → light */
+    /* low-poly globe: land ramp dark → light (also the facet art), sea ramp, cloud */
     --poly-0: #7E3119;
     --poly-1: #9A4426;
     --poly-2: #B45532;
@@ -45,6 +45,9 @@
     --poly-5: #E4906A;
     --poly-6: #ECAA88;
     --poly-7: #F1C2A6;
+    --land-0: #7E3119; --land-1: #9A4426; --land-2: #B45532; --land-3: #C4623B; --land-4: #D47A50; --land-5: #E4906A;
+    --sea-0: #C9A98F; --sea-1: #D8BBA3; --sea-2: #E3CBB6; --sea-3: #ECD8C6;
+    --cloud: #FFFBF7;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
@@ -56,6 +59,9 @@
       --sage: #8FA582; --ochre: #D9A441; --slate: #8C9DAE; --focus: #EFA27C;
       --poly-0: #2A140E; --poly-1: #4A2116; --poly-2: #6B2F1C; --poly-3: #8A3E23;
       --poly-4: #A64F2C; --poly-5: #C0623A; --poly-6: #D3784E; --poly-7: #E0906A;
+      --land-0: #6B2F1C; --land-1: #8A3E23; --land-2: #A64F2C; --land-3: #C0623A; --land-4: #D3784E; --land-5: #E0906A;
+      --sea-0: #2A1810; --sea-1: #3A241A; --sea-2: #4A2F23; --sea-3: #5A3A2C;
+      --cloud: #F2E6DB;
     }
   }
   :root[data-theme="dark"] {
@@ -67,6 +73,9 @@
     --sage: #8FA582; --ochre: #D9A441; --slate: #8C9DAE; --focus: #EFA27C;
     --poly-0: #2A140E; --poly-1: #4A2116; --poly-2: #6B2F1C; --poly-3: #8A3E23;
     --poly-4: #A64F2C; --poly-5: #C0623A; --poly-6: #D3784E; --poly-7: #E0906A;
+    --land-0: #6B2F1C; --land-1: #8A3E23; --land-2: #A64F2C; --land-3: #C0623A; --land-4: #D3784E; --land-5: #E0906A;
+    --sea-0: #2A1810; --sea-1: #3A241A; --sea-2: #4A2F23; --sea-3: #5A3A2C;
+    --cloud: #F2E6DB;
   }
 
   /* ───────────── base ───────────── */
@@ -131,11 +140,13 @@
 
   /* ───────────── hero ───────────── */
   .hero { position: relative; overflow: hidden; border-bottom: 1px solid var(--line); }
-  .hero canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-  .hero .wrap { position: relative; padding-block: clamp(40px, 9vw, 120px) clamp(32px, 6vw, 80px); }
-  .hero-grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: clamp(28px, 5vw, 64px); align-items: end; }
-  @media (max-width: 880px) { .hero-grid { grid-template-columns: 1fr; } }
-  .hero h1 { margin-top: 14px; }
+  .hero .wrap { padding-block: clamp(40px, 8vw, 104px) clamp(32px, 6vw, 80px); }
+  .hero-grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr); gap: clamp(28px, 5vw, 64px); align-items: center; }
+  .globe { width: min(100%, 460px); aspect-ratio: 1; margin-inline: auto; }
+  .globe canvas { width: 100%; height: 100%; display: block; }
+  .hero .term { margin: clamp(40px, 6vw, 72px) auto 0; max-width: 880px; }
+  @media (max-width: 880px) { .hero-grid { grid-template-columns: minmax(0, 1fr); } .globe { width: min(70vw, 340px); } .hero h1 .mark { font-size: min(1em, 7.2vw); } /* the wordmark is ~12.2em wide; 7.2vw keeps it inside a 16px gutter down to 320px */ }
+  .hero h1 { margin-top: 14px; font-size: clamp(2.2rem, 4.3vw, 3.3rem); }
   .hero h1 .mark { color: var(--terra-deep); }
   .hero .lede { margin-top: 22px; font-size: clamp(1.05rem, 1.6vw, 1.25rem); color: var(--ink-2); max-width: 52ch; }
   .cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
@@ -322,19 +333,22 @@
 
 <!-- ───────────── hero ───────────── -->
 <header class="hero" id="top">
-  <canvas id="poly" aria-hidden="true"></canvas>
   <div class="wrap">
     <div class="hero-grid">
       <div>
-        <p class="eyebrow">v0.1.0 · scaffolded · model-agnostic</p>
-        <h1>Introducing <span class="mark">wiki-dispatcher</span></h1>
-        <p class="lede">wiki-dispatcher is an agent that lives in your terminal and moves into your Obsidian vault. It reads the way you link, packs only the branch that matters, and hands back a deliverable — while its own skills evolve from every run, gated by you.</p>
+        <p class="eyebrow">v0.1.0 · a terminal agent for Obsidian vaults</p>
+        <h1><span class="mark">wiki-dispatcher</span></h1>
+        <p class="lede">It lives in your terminal and mounts your Obsidian vault. It reads the way you link, packs only the branch that matters, and hands back a deliverable — while its own skills evolve from every run, gated by you.</p>
         <div class="cta">
           <a class="btn primary" href="#quickstart">Mount a vault</a>
           <a class="btn" href="#how">See how it works</a>
         </div>
       </div>
-      <div class="term facet" role="img" aria-label="Example terminal session: mounting a vault and asking for a brief">
+      <div class="globe" role="img" aria-label="A low-poly globe with clouds drifting over it, turning slowly">
+        <canvas id="globe" aria-hidden="true"></canvas>
+      </div>
+    </div>
+    <div class="term facet" role="img" aria-label="Example terminal session: mounting a vault and asking for a brief">
         <div class="bar"><i></i><i></i><i></i><span>wd · example session</span></div>
 <pre><span class="p">$</span> wd fixture ./vault <span class="d">&amp;&amp;</span> wd mount ./vault
 <span class="d">fixture vault at ./vault</span>
@@ -349,7 +363,6 @@ mounted <span class="k">./vault</span> → 16 notes indexed
 <span class="p">$</span> wd garden evolve --skill branch-extract
 <span class="k">PENDING</span> 20260916-0915-7c2e: patch branch-extract  baseline=0.67 candidate=0.83
 <span class="d">see garden/pending/…/proposal.md — approve with</span> wd garden approve 20260916-0915-7c2e<span class="cursor"></span></pre>
-      </div>
     </div>
   </div>
 </header>
@@ -376,7 +389,7 @@ mounted <span class="k">./vault</span> → 16 notes indexed
 <section id="how">
   <div class="wrap">
     <p class="eyebrow">How it works</p>
-    <h2>Five things it does differently</h2>
+    <h2>What it does</h2>
 
     <article class="feature">
       <div class="art" aria-hidden="true">
@@ -392,7 +405,7 @@ mounted <span class="k">./vault</span> → 16 notes indexed
         </svg>
       </div>
       <div>
-        <h3>A vault it reads the way you wrote it</h3>
+        <h3>Retrieval follows your links</h3>
         <div class="body">
           <p>It parses <code>[[links]]</code>, aliases, heading links, embeds, inline and frontmatter tags, and the <code>up:</code> / <code>related:</code> links you hide in frontmatter — then resolves them the way Obsidian does, shortest path first. Behind that sits a SQLite full-text index and a weighted graph, cached outside the vault so nothing is added to it.</p>
           <p>Retrieval is a <em>branch</em>, not a search result: best-first from a seed over out-links, backlinks, and shared tags, depth-bounded, stopping when the token budget is spent. Explicit links outrank backlinks outrank tag siblings. What comes back is a catalog of paths first, then cited excerpts — so the agent can read the rest on demand instead of loading everything up front.</p>
@@ -417,7 +430,7 @@ mounted <span class="k">./vault</span> → 16 notes indexed
         </svg>
       </div>
       <div>
-        <h3>Ask it like a teammate</h3>
+        <h3>One command in, one file out</h3>
         <div class="body">
           <p><code>wd ask "…"</code> is the whole interface; <code>wd chat</code> keeps a thread. Before it touches the vault it restates your ask as a contract — <em>Kind · Audience · Done-when</em> — infers the deliverable (note, brief, report, outline, table, dataset, Marp deck, JSON Canvas, Mermaid, or a staged wiki page), and picks the traversal shape that fits: topical, broad, categorical, temporal, two-topic, or provenance.</p>
           <p>Every markdown deliverable lands in <code>&lt;vault&gt;/_dispatch/</code> with frontmatter — kind, trace id, the <code>[[sources]]</code> it drew on, a <code>dispatch/&lt;kind&gt;</code> tag — so it joins your graph the moment it's written.</p>
@@ -444,7 +457,7 @@ mounted <span class="k">./vault</span> → 16 notes indexed
         </svg>
       </div>
       <div>
-        <h3>Run many traversals at once</h3>
+        <h3>Parallel traversals on a cheaper model</h3>
         <div class="body">
           <p>Big asks fan out. A read-only <em>traverser</em> subagent — running on the cheaper worker tier — takes a seed and returns a cited context pack, so three branches can be pulled in parallel without spending frontier tokens on the walking. Three model tiers, any provider LangChain's <code>init_chat_model</code> knows: <code>frontier</code> for synthesis and proposals, <code>worker</code> for traversal and eval runs, <code>cheap</code> for wiki maintenance and judging — a local Ollama model if you like.</p>
           <p>Every run logs provider-reported tokens per model and a list-price cost estimate. <code>wd usage --days 7</code> tells you what the week cost.</p>
@@ -470,7 +483,7 @@ mounted <span class="k">./vault</span> → 16 notes indexed
         </svg>
       </div>
       <div>
-        <h3>Tend the garden yourself</h3>
+        <h3>Skills are managed through a ledger</h3>
         <div class="body">
           <p>Ask it to show its skills and you get a table grouped by family — name, state, how often each was used, how often patched, how many evals it has. Ask it to add, update, archive, restore, or pin one and it does, through a single ledgered tool. Every mutation records an actor and a reason, with before-and-after snapshots you can roll back to. Nothing is ever deleted; archiving is the only way out.</p>
           <p>It refuses to patch a skill it hasn't read this session, and it lints what it writes: no negative tool claims, no incident logs dressed up as rules, no descriptions past the trigger limit.</p>
@@ -496,7 +509,7 @@ mounted <span class="k">./vault</span> → 16 notes indexed
         </svg>
       </div>
       <div>
-        <h3>Trust it with more over time</h3>
+        <h3>One patch at a time, and you approve each</h3>
         <div class="body">
           <p>Every run is a trace. Rate the ones that matter, and <code>wd garden evolve</code> runs one iteration of the loop: a Wiki Maintainer root-causes the failing traces into pattern pages; a Skill Proposer reads the pattern index and the acceptance ledger and emits <em>one</em> atomic change; the change is applied to a copy of the library and scored against that skill's evals, baseline versus candidate; the diff is staged as a proposal you approve or reject from the CLI.</p>
           <p>Rejected ideas stay visible to the proposer so they are not re-proposed. The wiki never rolls back; skills do. During a task, the agent never reads the pattern wiki at all — giving it access measurably hurt in the research this is built on.</p>
@@ -514,7 +527,7 @@ mounted <span class="k">./vault</span> → 16 notes indexed
 <section id="uses">
   <div class="wrap">
     <p class="eyebrow">Uses</p>
-    <h2>How an ask becomes a deliverable</h2>
+    <h2>Where each ask goes</h2>
     <p class="muted prose" style="margin-top:12px">Each shape of ask routes to a traversal skill, a set of vault tools, and a deliverable kind. These are the routes the operating schema ships with.</p>
 
     <div class="tabs" role="tablist" aria-label="Ask shapes">
@@ -588,7 +601,7 @@ mounted <span class="k">./vault</span> → 16 notes indexed
 <section id="architecture">
   <div class="wrap">
     <p class="eyebrow">Architecture</p>
-    <h2>Two memories, kept apart on purpose</h2>
+    <h2>The vault and the garden</h2>
 
     <div class="memories">
       <div class="m">
@@ -707,7 +720,7 @@ mounted <span class="k">./vault</span> → 16 notes indexed
 <section id="skills">
   <div class="wrap">
     <p class="eyebrow">Skills</p>
-    <h2>Eighteen seeds, four families</h2>
+    <h2>Eighteen skills in four families</h2>
     <p class="muted prose" style="margin-top:12px">Skills teach <em>when</em> and <em>how</em>; the tools do the deterministic work. So a skill patch never changes what the code does — only how the model composes it. That is what makes automatic evolution safe to gate. Each skill carries a <code>PURPOSE.md</code> naming the patterns that motivated it.</p>
 
     <div class="families">
@@ -742,7 +755,7 @@ mounted <span class="k">./vault</span> → 16 notes indexed
       </div>
     </div>
 
-    <h3 style="margin-top:56px">Where the MVP stands</h3>
+    <h3 style="margin-top:56px">Status</h3>
     <div class="tbl-wrap">
       <table>
         <thead><tr><th>Phase</th><th>Scope</th><th>Status</th></tr></thead>
@@ -765,7 +778,7 @@ mounted <span class="k">./vault</span> → 16 notes indexed
     <div class="grid">
       <div>
         <p class="eyebrow">Quickstart</p>
-        <h2>Mount a vault today</h2>
+        <h2>Getting started</h2>
         <p class="muted" style="margin-top:14px; max-width: 46ch">Python 3.11+. The deterministic commands need no key at all; <code>wd ask</code>, <code>wd chat</code>, and <code>wd garden evolve</code> need whichever provider you put in <code>~/.wiki-dispatcher/config.toml</code>. Start with the fixture vault, then point it at the real one.</p>
         <div class="cta">
           <a class="btn primary" href="#top">Back to top</a>
@@ -867,88 +880,170 @@ wd usage --days 7</pre>
   });
   menu.addEventListener('click', e => { if (e.target.tagName === 'A') { menu.classList.remove('open'); menuBtn.setAttribute('aria-expanded', 'false'); } });
 
-  /* ───────────── low-poly hero mesh ───────────── */
-  const canvas = document.getElementById('poly');
+  /* ───────────── low-poly globe, with clouds ───────────── */
+  const canvas = document.getElementById('globe');
   const ctx = canvas.getContext('2d');
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let W = 0, H = 0, dpr = 1, cols = 0, rows = 0, pts = [], tris = [], shades = [], t0 = performance.now();
-  let CELL = 92;
+  let S = 0, R = 0, dpr = 1, land = [], sea = [], cloud = '#FFFBF7', glow = '#E4906A', night = '#7E3119', t0 = performance.now();
 
-  function readShades() {
-    const cs = getComputedStyle(document.documentElement);
-    shades = [];
-    for (let i = 0; i < 8; i++) shades.push(cs.getPropertyValue('--poly-' + i).trim() || '#C4623B');
+  function readColors() {
+    const cs = getComputedStyle(document.documentElement), v = n => cs.getPropertyValue(n).trim();
+    land = []; for (let i = 0; i < 6; i++) land.push(v('--land-' + i) || '#C4623B');
+    sea = []; for (let i = 0; i < 4; i++) sea.push(v('--sea-' + i) || '#C79C7B');
+    cloud = v('--cloud') || '#FFFBF7'; glow = v('--terra-hi') || '#E4906A'; night = v('--poly-0') || '#7E3119';
+  }
+  function hexA(h, a) { // css colour → rgba() at alpha a
+    if (h[0] !== '#') return h.replace(/rgba?\(([^)]*)\)/, (m, i) => 'rgba(' + i.split(',').slice(0, 3).join(',') + ',' + a + ')');
+    const x = h.length === 4 ? h.slice(1).split('').map(c => c + c).join('') : h.slice(1), n = parseInt(x, 16);
+    return 'rgba(' + (n >> 16 & 255) + ',' + (n >> 8 & 255) + ',' + (n & 255) + ',' + a + ')';
   }
 
-  function noise(x, y) { // cheap layered sines → gentle terrain
-    return Math.sin(x * 0.011) * Math.cos(y * 0.013) + 0.6 * Math.sin(x * 0.027 + y * 0.019) + 0.35 * Math.cos(x * 0.041 - y * 0.037);
-  }
+  // seeded noise, so the continents are the same on every visit
   function hash(i, j) { const s = Math.sin(i * 127.1 + j * 311.7) * 43758.5453; return s - Math.floor(s); }
+  function hash3(x, y, z) { const s = Math.sin(x * 127.1 + y * 311.7 + z * 74.7) * 43758.5453; return s - Math.floor(s); }
+  const sm = t => t * t * (3 - 2 * t), lerp = (a, b, t) => a + (b - a) * t;
+  function vnoise(x, y, z) {
+    const ix = Math.floor(x), iy = Math.floor(y), iz = Math.floor(z), fx = sm(x - ix), fy = sm(y - iy), fz = sm(z - iz);
+    const c = (dx, dy, dz) => hash3(ix + dx, iy + dy, iz + dz);
+    return lerp(lerp(lerp(c(0, 0, 0), c(1, 0, 0), fx), lerp(c(0, 1, 0), c(1, 1, 0), fx), fy),
+                lerp(lerp(c(0, 0, 1), c(1, 0, 1), fx), lerp(c(0, 1, 1), c(1, 1, 1), fx), fy), fz);
+  }
+  function fbm(x, y, z) { return (vnoise(x, y, z) + 0.5 * vnoise(x * 2.1 + 7.3, y * 2.1 + 1.9, z * 2.1 + 4.2) + 0.25 * vnoise(x * 4.3 + 2.2, y * 4.3 + 8.1, z * 4.3 + 0.7)) / 1.75; }
+  const norm = v => { const l = Math.hypot(v[0], v[1], v[2]) || 1; return [v[0] / l, v[1] / l, v[2] / l]; };
 
-  function build() {
-    const rect = canvas.parentElement.getBoundingClientRect();
-    W = Math.max(1, Math.floor(rect.width)); H = Math.max(1, Math.floor(rect.height));
-    dpr = Math.min(W < 720 ? 1.5 : 2, window.devicePixelRatio || 1);
-    canvas.width = W * dpr; canvas.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    CELL = W < 720 ? 72 : 92;
-    cols = Math.ceil(W / CELL) + 2; rows = Math.ceil(H / CELL) + 2;
-    pts = []; tris = [];
-    for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) {
-      const jx = (hash(i, j) - 0.5) * CELL * 0.7, jy = (hash(j, i + 97) - 0.5) * CELL * 0.7;
-      pts.push({ bx: (i - 1) * CELL + jx, by: (j - 1) * CELL + jy, ph: hash(i + 3, j + 5) * Math.PI * 2, amp: 4 + hash(i + 11, j + 7) * 6, x: 0, y: 0 });
+  // icosphere, three subdivisions → 1280 facets: coastlines stay faceted without turning into shards
+  function icosphere(level) {
+    const t = (1 + Math.sqrt(5)) / 2;
+    const verts = [[-1, t, 0], [1, t, 0], [-1, -t, 0], [1, -t, 0], [0, -1, t], [0, 1, t], [0, -1, -t], [0, 1, -t], [t, 0, -1], [t, 0, 1], [-t, 0, -1], [-t, 0, 1]].map(norm);
+    let faces = [[0, 11, 5], [0, 5, 1], [0, 1, 7], [0, 7, 10], [0, 10, 11], [1, 5, 9], [5, 11, 4], [11, 10, 2], [10, 7, 6], [7, 1, 8], [3, 9, 4], [3, 4, 2], [3, 2, 6], [3, 6, 8], [3, 8, 9], [4, 9, 5], [2, 4, 11], [6, 2, 10], [8, 6, 7], [9, 8, 1]];
+    const cache = new Map();
+    const mid = (a, b) => {
+      const k = a < b ? a + ':' + b : b + ':' + a;
+      if (cache.has(k)) return cache.get(k);
+      verts.push(norm([(verts[a][0] + verts[b][0]) / 2, (verts[a][1] + verts[b][1]) / 2, (verts[a][2] + verts[b][2]) / 2]));
+      cache.set(k, verts.length - 1); return verts.length - 1;
+    };
+    for (let l = 0; l < level; l++) {
+      const next = [];
+      for (const [a, b, c] of faces) { const ab = mid(a, b), bc = mid(b, c), ca = mid(c, a); next.push([a, ab, ca], [b, bc, ab], [c, ca, bc], [ab, bc, ca]); }
+      faces = next;
     }
-    for (let j = 0; j < rows - 1; j++) for (let i = 0; i < cols - 1; i++) {
-      const a = j * cols + i, b = a + 1, c = a + cols, d = c + 1;
-      if (hash(i + 31, j + 17) > 0.5) { tris.push([a, b, d]); tris.push([a, d, c]); } else { tris.push([a, b, c]); tris.push([b, d, c]); }
+    return { verts, faces };
+  }
+
+  // the ground: land sits proud of the sea, and the coast falls wherever a facet's corners disagree
+  const world = icosphere(3), COAST = 0.54;
+  const height = world.verts.map(v => fbm(v[0] * 2.3 + 3.1, v[1] * 2.3 + 1.7, v[2] * 2.3 + 5.4));
+  const ground = world.verts.map((v, i) => { const r = height[i] > COAST ? 1.025 + (height[i] - COAST) * 0.14 : 1; return [v[0] * r, v[1] * r, v[2] * r]; });
+  const isLand = world.faces.map(([a, b, c]) => (height[a] > COAST) + (height[b] > COAST) + (height[c] > COAST) >= 2);
+
+  // the weather: sixteen clusters of two or three overlapping lobes, floating a little above the surface
+  const clouds = [];
+  for (let i = 0; i < 16; i++) {
+    const lat = Math.asin(hash(i, 1) * 2 - 1) * 0.75, lon = hash(i, 2) * Math.PI * 2; // pulled toward the mid-latitudes
+    const lobes = 2 + Math.floor(hash(i, 3) * 2);
+    for (let m = 0; m < lobes; m++) {
+      const la = lat + (hash(i, 40 + m) - 0.5) * 0.14, lo = lon + (hash(i, 50 + m) - 0.5) * 0.34;
+      const p = [Math.cos(la) * Math.cos(lo), Math.sin(la), Math.cos(la) * Math.sin(lo)];
+      const e = [-Math.sin(lo), 0, Math.cos(lo)];                                           // along the parallel
+      const n = [-Math.sin(la) * Math.cos(lo), Math.cos(la), -Math.sin(la) * Math.sin(lo)]; // along the meridian
+      const k = 6 + Math.floor(hash(i, 60 + m) * 3), size = 0.1 + hash(i, 70 + m) * 0.08, alt = 1.08 + hash(i, 5) * 0.03 + m * 0.008;
+      const ring = [];
+      for (let j = 0; j < k; j++) {
+        const a = (j / k) * Math.PI * 2 + hash(i, 10 + j + m * 9) * 0.5, r = size * (0.6 + hash(i, 30 + j + m * 9) * 0.4);
+        const dx = Math.cos(a) * r * 1.6, dy = Math.sin(a) * r; // stretched along the wind
+        ring.push(norm([p[0] + e[0] * dx + n[0] * dy, p[1] + e[1] * dx + n[1] * dy, p[2] + e[2] * dx + n[2] * dy]).map(c => c * alt));
+      }
+      clouds.push({ ring, id: i * 4 + m });
     }
+  }
+
+  // spin about the globe's own axis, tip the pole toward the viewer a little, then lean the axis 23.4° in the picture plane
+  const TILT = -23.4 * Math.PI / 180, TIP = 0.2, cT = Math.cos(TILT), sT = Math.sin(TILT), cP = Math.cos(TIP), sP = Math.sin(TIP);
+  function rot(v, ca, sa) {
+    const x = v[0] * ca + v[2] * sa, y0 = v[1], z0 = -v[0] * sa + v[2] * ca;
+    const y = y0 * cP - z0 * sP, z = y0 * sP + z0 * cP;
+    return [x * cT - y * sT, x * sT + y * cT, z];
+  }
+  const L = norm([-0.5, 0.6, 0.65]); // light from the upper left, in front
+  function normal(A, B, C) {
+    let nx = (B[1] - A[1]) * (C[2] - A[2]) - (B[2] - A[2]) * (C[1] - A[1]);
+    let ny = (B[2] - A[2]) * (C[0] - A[0]) - (B[0] - A[0]) * (C[2] - A[2]);
+    let nz = (B[0] - A[0]) * (C[1] - A[1]) - (B[1] - A[1]) * (C[0] - A[0]);
+    if (nx * (A[0] + B[0] + C[0]) + ny * (A[1] + B[1] + C[1]) + nz * (A[2] + B[2] + C[2]) < 0) { nx = -nx; ny = -ny; nz = -nz; } // outward
+    const l = Math.hypot(nx, ny, nz) || 1; return [nx / l, ny / l, nz / l];
+  }
+  function shade(n, ramp, sa, sb) {
+    const lit = n[0] * L[0] + n[1] * L[1] + n[2] * L[2];
+    const spread = Math.max(0, Math.min(1, (lit + 0.35) / 1.3)), top = ramp.length - 1;
+    const dither = (hash(sa, sb) - 0.5) * 0.9; // ±half a step of facet-to-facet variety
+    return ramp[Math.max(0, Math.min(top, Math.round(spread * top + dither)))];
+  }
+  function tri(A, B, C, px, py, fill) {
+    ctx.fillStyle = fill; ctx.strokeStyle = fill; ctx.lineWidth = 0.7;
+    ctx.beginPath(); ctx.moveTo(px(A), py(A)); ctx.lineTo(px(B), py(B)); ctx.lineTo(px(C), py(C)); ctx.closePath(); ctx.fill(); ctx.stroke(); // stroke hides hairline seams
   }
 
   function draw(now) {
-    const t = (now - t0) / 1000;
-    for (const p of pts) { p.x = p.bx + (reduce ? 0 : Math.sin(t * 0.35 + p.ph) * p.amp); p.y = p.by + (reduce ? 0 : Math.cos(t * 0.28 + p.ph) * p.amp * 0.8); }
-    ctx.clearRect(0, 0, W, H);
-    const lx = -0.55, ly = -0.7, lz = 0.85; // light from upper-left
-    for (const [a, b, c] of tris) {
-      const A = pts[a], B = pts[b], C = pts[c];
-      const za = noise(A.x, A.y) * 70, zb = noise(B.x, B.y) * 70, zc = noise(C.x, C.y) * 70;
-      const ux = B.x - A.x, uy = B.y - A.y, uz = zb - za, vx = C.x - A.x, vy = C.y - A.y, vz = zc - za;
-      let nx = uy * vz - uz * vy, ny = uz * vx - ux * vz, nz = ux * vy - uy * vx;
-      const len = Math.hypot(nx, ny, nz) || 1; nx /= len; ny /= len; nz /= len;
-      if (nz < 0) { nx = -nx; ny = -ny; nz = -nz; }
-      let lit = nx * lx + ny * ly + nz * lz; // -1..1
-      // fade toward the right/bottom so text on the left stays readable
-      const cx = (A.x + B.x + C.x) / 3, cy = (A.y + B.y + C.y) / 3;
-      const fade = Math.min(1, Math.max(0, (cx / W - 0.25) * 1.6)) * 0.55 + 0.45;
-      lit = lit * fade + (1 - fade) * 0.95;
-      // normals mostly face up, so lit clusters near 1; stretch [0.2, 1] over the full ramp
-      const spread = Math.max(0, Math.min(1, (lit - 0.2) / 0.8));
-      const dither = (hash(a, b) - 0.5) * 0.9; // ±half a step of facet-to-facet variety
-      const idx = Math.max(0, Math.min(7, Math.round(spread * 7 + dither)));
-      ctx.fillStyle = shades[idx];
-      ctx.beginPath(); ctx.moveTo(A.x, A.y); ctx.lineTo(B.x, B.y); ctx.lineTo(C.x, C.y); ctx.closePath(); ctx.fill();
-      ctx.strokeStyle = shades[idx]; ctx.lineWidth = 0.6; ctx.stroke(); // hide hairline seams
+    const a = reduce ? 0.9 : ((now - t0) / 1000) * (Math.PI * 2 / 95); // one turn every ~95 s
+    const ca = Math.cos(a), sa = Math.sin(a);
+    const ac = a * 1.25 + 0.6, cc = Math.cos(ac), sc = Math.sin(ac);  // the weather outruns the ground
+    const cx = S / 2, cy = S / 2, px = v => cx + v[0] * R, py = v => cy - v[1] * R;
+    ctx.clearRect(0, 0, S, S);
+
+    // atmosphere
+    const g = ctx.createRadialGradient(cx, cy, R * 0.92, cx, cy, R * 1.26);
+    g.addColorStop(0, hexA(glow, 0.3)); g.addColorStop(0.5, hexA(glow, 0.1)); g.addColorStop(1, hexA(glow, 0));
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx, cy, R * 1.26, 0, Math.PI * 2); ctx.fill();
+
+    // ground, far facets first
+    const rv = ground.map(v => rot(v, ca, sa)), front = [];
+    for (let i = 0; i < world.faces.length; i++) {
+      const [ia, ib, ic] = world.faces[i], A = rv[ia], B = rv[ib], C = rv[ic], n = normal(A, B, C);
+      if (n[2] > 0) front.push({ i, z: A[2] + B[2] + C[2], n });
     }
-    // wash so type sits comfortably: left-to-right on wide screens, top-to-bottom when the
-    // terminal stacks under the copy on a phone
-    const bg = getComputedStyle(document.body).backgroundColor;
-    const rgba = a => bg.replace('rgb(', 'rgba(').replace(')', ', ' + a + ')');
-    let g;
-    if (W < 880) {
-      g = ctx.createLinearGradient(0, 0, 0, H);
-      g.addColorStop(0, rgba(0.94)); g.addColorStop(0.55, rgba(0.86)); g.addColorStop(1, rgba(0.35));
-    } else {
-      g = ctx.createLinearGradient(0, 0, W, 0);
-      g.addColorStop(0, rgba(0.92)); g.addColorStop(0.42, rgba(0.62)); g.addColorStop(1, rgba(0.08));
+    front.sort((p, q) => p.z - q.z);
+    for (const f of front) {
+      const [ia, ib, ic] = world.faces[f.i];
+      tri(rv[ia], rv[ib], rv[ic], px, py, isLand[f.i] ? shade(f.n, land, ia, ib) : shade(f.n, sea, ia, ic));
     }
-    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+
+    // cloud shadows on the ground, then the clouds themselves, far to near
+    const lobes = [];
+    for (const c of clouds) {
+      const ring = c.ring.map(v => rot(v, cc, sc));
+      let x = 0, y = 0, z = 0; for (const v of ring) { x += v[0]; y += v[1]; z += v[2]; }
+      const n = norm([x, y, z]);
+      if (n[2] > 0.02) lobes.push({ ring, n, id: c.id });
+    }
+    lobes.sort((p, q) => p.n[2] - q.n[2]);
+    const off = [-L[0] * 0.07, -L[1] * 0.07, 0];
+    const poly = (pts, fill) => { ctx.fillStyle = fill; ctx.beginPath(); pts.forEach((v, i) => i ? ctx.lineTo(px(v), py(v)) : ctx.moveTo(px(v), py(v))); ctx.closePath(); ctx.fill(); };
+    for (const l of lobes) {
+      if (l.n[2] < 0.25) continue;
+      poly(l.ring.map(v => norm([v[0] + off[0], v[1] + off[1], v[2]]).map(c => c * 1.004)), hexA(night, 0.16 * Math.min(1, (l.n[2] - 0.25) / 0.4)));
+    }
+    for (const l of lobes) {
+      const lit = Math.max(0, l.n[0] * L[0] + l.n[1] * L[1] + l.n[2] * L[2]), fade = Math.min(1, l.n[2] / 0.35);
+      poly(l.ring, hexA(cloud, (0.5 + 0.36 * lit) * 0.92 * fade));
+      // a smaller, brighter crown pulled toward the light gives the lobe some volume
+      const cx3 = l.ring.reduce((a, v) => a + v[0], 0) / l.ring.length, cy3 = l.ring.reduce((a, v) => a + v[1], 0) / l.ring.length, cz3 = l.ring.reduce((a, v) => a + v[2], 0) / l.ring.length;
+      poly(l.ring.map(v => [cx3 + (v[0] - cx3) * 0.55 + L[0] * 0.018, cy3 + (v[1] - cy3) * 0.55 + L[1] * 0.018, cz3 + (v[2] - cz3) * 0.55 + 0.01]), hexA(cloud, 0.35 * lit * fade));
+    }
   }
 
+  function size() {
+    const rect = canvas.parentElement.getBoundingClientRect();
+    S = Math.max(1, Math.floor(rect.width)); dpr = Math.min(2, window.devicePixelRatio || 1);
+    canvas.width = S * dpr; canvas.height = S * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    R = S * 0.38; // glow reaches 1.26R and must stay inside the square
+  }
   let raf = null, last = 0, visible = true;
   function loop(now) {
-    if (now - last > 1000 / (W < 720 ? 16 : 24)) { draw(now); last = now; }
+    if (now - last > 1000 / (S < 400 ? 18 : 24)) { draw(now); last = now; }
     raf = requestAnimationFrame(loop);
   }
-  // don't burn battery drawing a hero nobody is looking at
+  // don't burn battery turning a globe nobody is looking at
   if ('IntersectionObserver' in window) {
     new IntersectionObserver(entries => {
       visible = entries[0].isIntersecting;
@@ -957,7 +1052,7 @@ wd usage --days 7</pre>
     }, { threshold: 0.02 }).observe(canvas.parentElement);
   }
   function start() {
-    readShades(); build();
+    readColors(); size();
     if (raf) cancelAnimationFrame(raf);
     if (reduce) draw(performance.now()); else raf = requestAnimationFrame(loop);
   }
