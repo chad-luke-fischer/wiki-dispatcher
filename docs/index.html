@@ -172,6 +172,18 @@
   .stats span { font-size: 0.85rem; color: var(--muted); }
   @media (max-width: 720px) { .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 
+  /* lineage cards: the three ideas this scaffold is built on, credited */
+  .lineage { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; margin-top: 28px; }
+  .lineage-card { display: block; padding: 24px 22px; background: var(--card); border: 1px solid var(--line); text-decoration: none; color: inherit; transition: transform .15s ease, border-color .15s ease; }
+  .lineage-card:hover { transform: translateY(-2px); border-color: var(--terra); }
+  .lineage-icon { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 10px; background: var(--clay); color: var(--terra-deep); }
+  .lineage-icon svg { width: 22px; height: 22px; }
+  .lineage-src { display: block; margin-top: 16px; font-family: "Public Sans", sans-serif; font-size: 0.78rem; font-weight: 600; color: var(--muted); }
+  .lineage-card:hover .lineage-src { color: var(--terra-deep); }
+  .lineage-card h3 { margin-top: 6px; font-size: 1.15rem; }
+  .lineage-card p { margin-top: 10px; font-size: 0.92rem; line-height: 1.5; color: var(--ink-2); }
+  @media (max-width: 760px) { .lineage { grid-template-columns: 1fr; } }
+
   /* differentiators */
   .feature { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: clamp(24px, 4vw, 56px); align-items: start; padding-block: clamp(36px, 5vw, 60px); }
   .feature + .feature { border-top: 1px dashed var(--line); }
@@ -372,15 +384,50 @@ mounted <span class="k">./vault</span> → 16 notes indexed
   <div class="wrap">
     <div class="prose intro">
       <p class="lead">Most agents treat a vault as a pile of files to search. wiki-dispatcher treats it as what it is: a graph you built by hand, with an index you curated, links you chose, and tags you meant. It traverses that graph on a token budget, cites every note it draws on, and never writes back without asking.</p>
-      <p>Ask it in plain language — <em>brief me on</em>, <em>compare</em>, <em>lay this out on a canvas</em>, <em>what did I do in August</em> — and it infers the deliverable, picks a traversal shape to match, and returns Obsidian-native markdown (or a Marp deck, a JSON Canvas, a CSV) that links straight back into your graph.</p>
-      <p>It keeps two memories, and keeps them apart. The vault is <strong>what is known</strong>; it's mounted read-only. The garden is <strong>how to work</strong>; it's a small pattern wiki that compiles the agent's own execution traces into rules, proposes one skill change at a time, validates it against evals on a copy, and stages the diff for your approval. Any model can drive it — three tiers, each a single config line.</p>
-      <p>It was designed from three sources: Karpathy's LLM Wiki pattern, Google Research's WikiSkill paper on skills that co-evolve with a persistent wiki, and Nous Research's Hermes Agent, whose skill curator taught it what <em>not</em> to capture.</p>
     </div>
     <div class="stats" aria-label="Scaffold at a glance">
       <div><b>18</b><span>seed skills · 4 families</span></div>
       <div><b>12</b><span>read-only vault tools</span></div>
       <div><b>10</b><span>deliverable kinds</span></div>
       <div><b>17</b><span>tests, no API key needed</span></div>
+    </div>
+
+    <p class="eyebrow" style="margin-top:56px">Built on three ideas</p>
+    <div class="lineage">
+      <a class="lineage-card facet" href="https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f">
+        <span class="lineage-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 5.5C4 4.67 4.67 4 5.5 4H11a1 1 0 0 1 1 1v15a1 1 0 0 0-1-1H5.5A1.5 1.5 0 0 1 4 17.5V5.5Z"/>
+            <path d="M20 5.5c0-.83-.67-1.5-1.5-1.5H13a1 1 0 0 0-1 1v15a1 1 0 0 1 1-1h5.5a1.5 1.5 0 0 0 1.5-1.5V5.5Z"/>
+          </svg>
+        </span>
+        <span class="lineage-src">Karpathy · LLM Wiki</span>
+        <h3>A wiki as memory, not a transcript</h3>
+        <p>Instead of scrolling back through everything that's ever happened, the agent keeps a small set of pages it reads and writes to directly — closer to notes a person keeps for themselves than a chat log.</p>
+      </a>
+      <a class="lineage-card facet" href="https://arxiv.org/abs/2608.27454">
+        <span class="lineage-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4.5 12a7.5 7.5 0 0 1 12.6-5.5"/>
+            <path d="M19.5 4.5v4.5H15"/>
+            <path d="M19.5 12a7.5 7.5 0 0 1-12.6 5.5"/>
+            <path d="M4.5 19.5V15H9"/>
+          </svg>
+        </span>
+        <span class="lineage-src">Google Research · WikiSkill</span>
+        <h3>Its instructions improve after every run</h3>
+        <p>After each task, a separate pass looks at what worked and proposes one small tweak to how the agent works next time. Nothing changes until you approve it.</p>
+      </a>
+      <a class="lineage-card facet" href="https://github.com/NousResearch/hermes-agent">
+        <span class="lineage-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 5h16l-6.2 7.4V19l-3.6 1.8v-8.4Z"/>
+          </svg>
+        </span>
+        <span class="lineage-src">Nous Research · Hermes Agent</span>
+        <h3>It learns lessons, not complaints</h3>
+        <p>A one-off mistake doesn't get written down as a rule. Only patterns that hold up across multiple runs get promoted into how the agent behaves.</p>
+      </a>
     </div>
   </div>
 </section>
