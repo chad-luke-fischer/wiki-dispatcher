@@ -1,0 +1,21 @@
+[
+ {
+  "id": "map-orients",
+  "prompt": "What is this vault about and how is it organised?",
+  "expected": "Names the index/MOC, folder roles, and main tag namespaces.",
+  "assertions": [
+   {
+    "type": "tool_used",
+    "value": "vault_map"
+   },
+   {
+    "type": "regex",
+    "value": "index|moc"
+   },
+   {
+    "type": "max_tool_calls",
+    "value": "6"
+   }
+  ]
+ }
+]

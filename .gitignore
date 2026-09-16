@@ -1,0 +1,20 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+dist/
+build/
+*.egg-info/
+
+# dispatcher runtime state (lives in ~/.wiki-dispatcher by default; keep out of repo if relocated here)
+garden/.usage.json
+garden/.blobs/
+garden/.archive/
+garden/raw/traces/*.jsonl
+garden/pending/*/
+!garden/pending/.gitkeep
+usage.jsonl
+fixtures/generated/
+
+# nothing in docs/ is generated; keep it tracked

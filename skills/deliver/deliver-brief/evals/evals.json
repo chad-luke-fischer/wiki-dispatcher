@@ -1,0 +1,21 @@
+[
+ {
+  "id": "brief-contract",
+  "prompt": "Give me a brief on the Lethal Trifecta as it applies to this vault.",
+  "expected": "Bullets first, why-it-matters, sources as wikilinks.",
+  "assertions": [
+   {
+    "type": "regex",
+    "value": "\\[\\[Lethal Trifecta\\]\\]|\\[\\[wiki/concepts/Lethal Trifecta"
+   },
+   {
+    "type": "regex",
+    "value": "(?i)sources"
+   },
+   {
+    "type": "max_tool_calls",
+    "value": "10"
+   }
+  ]
+ }
+]

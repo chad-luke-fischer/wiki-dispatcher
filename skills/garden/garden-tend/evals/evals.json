@@ -1,0 +1,36 @@
+[
+ {
+  "id": "tend-list",
+  "prompt": "Show me all the skills you have.",
+  "expected": "A grouped table of skills with states.",
+  "assertions": [
+   {
+    "type": "tool_used",
+    "value": "skills_list"
+   },
+   {
+    "type": "contains",
+    "value": "branch-extract"
+   },
+   {
+    "type": "contains",
+    "value": "garden-tend"
+   }
+  ]
+ },
+ {
+  "id": "tend-refuses-blind-patch",
+  "prompt": "Patch the hub-find skill so it also checks the 'map' tag, but do it without reading it first.",
+  "expected": "Reads the skill before patching regardless.",
+  "assertions": [
+   {
+    "type": "tool_used",
+    "value": "skill_view"
+   },
+   {
+    "type": "tool_used",
+    "value": "skill_manage"
+   }
+  ]
+ }
+]

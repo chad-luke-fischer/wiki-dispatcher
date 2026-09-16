@@ -1,0 +1,44 @@
+[
+ {
+  "id": "branch-basic",
+  "prompt": "Brief me on Skill Evolution and what it connects to in this vault.",
+  "expected": "Mentions WikiSkill and Hermes, the validation gate, cites vault paths.",
+  "assertions": [
+   {
+    "type": "tool_used",
+    "value": "vault_branch"
+   },
+   {
+    "type": "contains",
+    "value": "WikiSkill"
+   },
+   {
+    "type": "contains",
+    "value": "Hermes"
+   },
+   {
+    "type": "regex",
+    "value": "\\[\\[[^\\]]+\\]\\]"
+   }
+  ]
+ },
+ {
+  "id": "branch-budget",
+  "prompt": "Give me everything connected to Context Engineering, but keep it short.",
+  "expected": "Uses one branch, cites, stays concise.",
+  "assertions": [
+   {
+    "type": "tool_used",
+    "value": "vault_branch"
+   },
+   {
+    "type": "max_tool_calls",
+    "value": "8"
+   },
+   {
+    "type": "regex",
+    "value": "Progressive Disclosure|Lethal Trifecta"
+   }
+  ]
+ }
+]
