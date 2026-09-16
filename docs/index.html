@@ -436,58 +436,8 @@ mounted <span class="k">./vault</span> → 16 notes indexed
 <section id="how">
   <div class="wrap">
     <p class="eyebrow">How it works</p>
-    <h2>What it does</h2>
-
-    <article class="feature">
-      <div class="art" aria-hidden="true">
-        <svg viewBox="0 0 200 200">
-          <polygon points="100,18 170,60 100,80" fill="var(--poly-6)"/>
-          <polygon points="30,60 100,18 100,80" fill="var(--poly-4)"/>
-          <polygon points="30,60 100,80 60,150" fill="var(--poly-2)"/>
-          <polygon points="100,80 170,60 140,150" fill="var(--poly-3)"/>
-          <polygon points="60,150 100,80 140,150" fill="var(--poly-1)"/>
-          <polygon points="30,60 60,150 40,120" fill="var(--poly-0)"/>
-          <polygon points="170,60 160,120 140,150" fill="var(--poly-5)"/>
-          <polygon points="60,150 140,150 100,185" fill="var(--poly-0)"/>
-        </svg>
-      </div>
-      <div>
-        <h3>Retrieval follows your links</h3>
-        <div class="body">
-          <p>It parses <code>[[links]]</code>, aliases, heading links, embeds, inline and frontmatter tags, and the <code>up:</code> / <code>related:</code> links you hide in frontmatter — then resolves them the way Obsidian does, shortest path first. Behind that sits a SQLite full-text index and a weighted graph, cached outside the vault so nothing is added to it.</p>
-          <p>Retrieval is a <em>branch</em>, not a search result: best-first from a seed over out-links, backlinks, and shared tags, depth-bounded, stopping when the token budget is spent. Explicit links outrank backlinks outrank tag siblings. What comes back is a catalog of paths first, then cited excerpts — so the agent can read the rest on demand instead of loading everything up front.</p>
-        </div>
-        <blockquote>
-          <p>One branch ≈ 8k tokens by default. Two branches from different seeds beat one deep branch when the ask spans two topics. Depth 3 is almost never worth it; prefer a second seed.</p>
-          <footer>— <code>skills/traverse/branch-extract/SKILL.md</code></footer>
-        </blockquote>
-      </div>
-    </article>
-
-    <article class="feature">
-      <div class="art" aria-hidden="true">
-        <svg viewBox="0 0 200 200">
-          <polygon points="24,50 150,36 156,100" fill="var(--poly-5)"/>
-          <polygon points="24,50 156,100 40,130" fill="var(--poly-3)"/>
-          <polygon points="40,130 156,100 120,140" fill="var(--poly-2)"/>
-          <polygon points="40,130 120,140 56,176" fill="var(--poly-1)"/>
-          <polygon points="150,36 180,70 156,100" fill="var(--poly-7)"/>
-          <polygon points="156,100 180,70 176,116 120,140" fill="var(--poly-4)"/>
-          <polygon points="24,50 40,130 14,96" fill="var(--poly-0)"/>
-        </svg>
-      </div>
-      <div>
-        <h3>One command in, one file out</h3>
-        <div class="body">
-          <p><code>wd ask "…"</code> is the whole interface; <code>wd chat</code> keeps a thread. Before it touches the vault it restates your ask as a contract — <em>Kind · Audience · Done-when</em> — infers the deliverable (note, brief, report, outline, table, dataset, Marp deck, JSON Canvas, Mermaid, or a staged wiki page), and picks the traversal shape that fits: topical, broad, categorical, temporal, two-topic, or provenance.</p>
-          <p>Every markdown deliverable lands in <code>&lt;vault&gt;/_dispatch/</code> with frontmatter — kind, trace id, the <code>[[sources]]</code> it drew on, a <code>dispatch/&lt;kind&gt;</code> tag — so it joins your graph the moment it's written.</p>
-        </div>
-        <blockquote>
-          <p>Distinguish what the vault says from what you infer: “The vault says… / I infer…”. If two notes contradict, that is a finding; put it under Contradictions, never resolve it silently.</p>
-          <footer>— <code>skills/deliver/deliver-markdown/SKILL.md</code></footer>
-        </blockquote>
-      </div>
-    </article>
+    <h2>Skills are gardened, not shipped</h2>
+    <p class="muted prose" style="margin-top:12px">A skill isn't finished when it's written. The first version is a guess about how a job should go, and running it is how you find out which parts were right. A skill that works has usually been reshaped a few times. Parts get cut, parts get merged, and sometimes it gets split in two. It was rarely specified correctly on the first try.</p>
 
     <article class="feature">
       <div class="art" aria-hidden="true">
@@ -504,14 +454,16 @@ mounted <span class="k">./vault</span> → 16 notes indexed
         </svg>
       </div>
       <div>
-        <h3>Parallel traversals on a cheaper model</h3>
+        <h3>story-rex: two halves, grafted</h3>
         <div class="body">
-          <p>Big asks fan out. A read-only <em>traverser</em> subagent — running on the cheaper worker tier — takes a seed and returns a cited context pack, so three branches can be pulled in parallel without spending frontier tokens on the walking. Three model tiers, any provider LangChain's <code>init_chat_model</code> knows: <code>frontier</code> for synthesis and proposals, <code>worker</code> for traversal and eval runs, <code>cheap</code> for wiki maintenance and judging — a local Ollama model if you like.</p>
-          <p>Every run logs provider-reported tokens per model and a list-price cost estimate. <code>wd usage --days 7</code> tells you what the week cost.</p>
+          <p>story-rex turns recorded conversations into written stories in an Obsidian vault. It started as two skills. story-ψ was the feed: find recordings that hadn't been processed, group them into sessions, stage them, and advance a watermark. story-φ was the craft: turn what was staged into writing.</p>
+          <p>φ was thorough. For every story it wrote six separate analyses: <code style="white-space:nowrap">sentiment.md</code>, <code style="white-space:nowrap">air-time.md</code>, <code style="white-space:nowrap">author-tones.md</code>, <code style="white-space:nowrap">literary-strategies.md</code>, <code style="white-space:nowrap">transcript-analysis.md</code>, <code style="white-space:nowrap">metadata.md</code>, plus an index. That was six lenses on every conversation, far more than anyone could maintain or read.</p>
+          <p>story-rex put both halves in one skill and wrote the rules down once, in one conventions file, so they stopped drifting between runs. It dropped the six lenses, kept the story, and spent the savings on checking. Five gates must pass before a weave counts as done. One compares every quoted line against the source transcript and fails the run on a quote nobody said.</p>
+          <p>The ancestors weren't wrong, they were unfinished. Splitting feed from craft was right. Keeping them in separate skills was not. You only learn that by running them.</p>
         </div>
         <blockquote>
-          <p>Never exceed the configured budget; two smaller packs beat one big one. The catalog is what you cite from.</p>
-          <footer>— <code>skills/traverse/context-pack/SKILL.md</code></footer>
+          <p>predecessors story-φ/story-ψ are retired — never load them.</p>
+          <footer>— <code>story-rex/skills/story-rex/SKILL.md</code></footer>
         </blockquote>
       </div>
     </article>
@@ -530,41 +482,11 @@ mounted <span class="k">./vault</span> → 16 notes indexed
         </svg>
       </div>
       <div>
-        <h3>Skills are managed through a ledger</h3>
+        <h3>Customer sentiment: a cutting from φ</h3>
         <div class="body">
-          <p>Ask it to show its skills and you get a table grouped by family — name, state, how often each was used, how often patched, how many evals it has. Ask it to add, update, archive, restore, or pin one and it does, through a single ledgered tool. Every mutation records an actor and a reason, with before-and-after snapshots you can roll back to. Nothing is ever deleted; archiving is the only way out.</p>
-          <p>It refuses to patch a skill it hasn't read this session, and it lints what it writes: no negative tool claims, no incident logs dressed up as rules, no descriptions past the trigger limit.</p>
+          <p>When story-rex dropped the six lenses, sentiment went with them. It came back later on purpose: a customer-sentiment workflow grown from story-rex that runs daily across every call.</p>
+          <p>Under φ, sentiment was one of six files nobody read, written about one person's own meetings. Now it has one job. It inherits story-rex's feed (pull new recordings, skip anything already processed, never redo work) and its habit of checking before a run counts as done. It runs on a schedule with no one watching.</p>
         </div>
-        <blockquote>
-          <p>Write lessons as rules (“Prefer a second seed over depth 3 — depth 3 pulls tag siblings”) not incident logs (“On 2026-09-12 the branch was too deep”). Archive, never delete.</p>
-          <footer>— <code>skills/garden/garden-tend/SKILL.md</code></footer>
-        </blockquote>
-      </div>
-    </article>
-
-    <article class="feature">
-      <div class="art" aria-hidden="true">
-        <svg viewBox="0 0 200 200">
-          <polygon points="100,16 150,80 100,60" fill="var(--poly-7)"/>
-          <polygon points="50,80 100,16 100,60" fill="var(--poly-5)"/>
-          <polygon points="50,80 100,60 76,120" fill="var(--poly-3)"/>
-          <polygon points="100,60 150,80 124,120" fill="var(--poly-4)"/>
-          <polygon points="76,120 100,60 124,120" fill="var(--poly-2)"/>
-          <polygon points="76,120 124,120 118,184 82,184" fill="var(--poly-1)"/>
-          <polygon points="50,80 76,120 40,100" fill="var(--poly-0)"/>
-          <polygon points="150,80 160,100 124,120" fill="var(--poly-6)"/>
-        </svg>
-      </div>
-      <div>
-        <h3>One patch at a time, and you approve each</h3>
-        <div class="body">
-          <p>Every run is a trace. Rate the ones that matter, and <code>wd garden evolve</code> runs one iteration of the loop: a Wiki Maintainer root-causes the failing traces into pattern pages; a Skill Proposer reads the pattern index and the acceptance ledger and emits <em>one</em> atomic change; the change is applied to a copy of the library and scored against that skill's evals, baseline versus candidate; the diff is staged as a proposal you approve or reject from the CLI.</p>
-          <p>Rejected ideas stay visible to the proposer so they are not re-proposed. The wiki never rolls back; skills do. During a task, the agent never reads the pattern wiki at all — giving it access measurably hurt in the research this is built on.</p>
-        </div>
-        <blockquote>
-          <p>One proposal per iteration · wiki never rolls back · inference agent never reads patterns · rejected proposals stay visible to the proposer · lessons not incident logs · archive not delete · read before patch · every mutation has an actor and a reason.</p>
-          <footer>— invariants, <code>AGENTS.md</code></footer>
-        </blockquote>
       </div>
     </article>
   </div>
